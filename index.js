@@ -21,6 +21,7 @@ async function run() {
         await client.connect();
 
         const usersCollection = client.db('toolsManufacturerDB').collection('users');
+        const adminsCollection = client.db('toolsManufacturerDB').collection('admins');
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
@@ -66,6 +67,41 @@ async function run() {
             const deletedUser = await usersCollection.deleteOne(query);
 
             res.send(deletedUser);
+        });
+
+        // all admins
+        app.get('/admins', async (req, res) => {
+            const query = {};
+            const cursor = adminsCollection.find(query);
+            const admins = await cursor.toArray();
+
+            res.send(admins);
+        });
+
+        // single admin
+        app.get('/admins/:email', async (req, res) => {
+            const email = req?.params?.email;
+            const query = { email: ObjectId(email) };
+            const admin = await adminsCollection.findOne(query);
+
+            res.send(admin);
+        });
+
+        // add new user
+        app.post('/add-admin', async (req, res) => {
+            const newAdminData = req.body;
+            const newAdmin = await adminsCollection.insertOne(newAdminData);
+
+            res.send(newAdmin);
+        });
+
+        // delete a admin
+        app.delete('/delete-admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: ObjectId(email) };
+            const deletedAdmin = await adminsCollection.deleteOne(query);
+
+            res.send(deletedAdmin);
         });
 
         // all reviews
