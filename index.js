@@ -104,9 +104,18 @@ async function run() {
         // add to my orders
         app.post('/add-my-orders', async (req, res) => {
             const newlyOrderedProduct = req.body;
-            const newOrder = await myItemsCollection.insertOne(newlyOrderedProduct);
+            const newOrder = await myOrdersCollection.insertOne(newlyOrderedProduct);
 
             res.send(newOrder);
+        });
+
+        // delete from my orders
+        app.delete('/my-orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deletedOrder = await myOrdersCollection.deleteOne(query);
+
+            res.send(deletedOrder);
         });
     }
     finally {
