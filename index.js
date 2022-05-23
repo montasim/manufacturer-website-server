@@ -43,11 +43,18 @@ async function run() {
             res.send(user);
         });
 
+        // add new user
+        app.post('/add-user', async (req, res) => {
+            const newUserData = req.body;
+            const newUser = await usersCollection.insertOne(newUserData);
+            res.send(newUser);
+        });
+
         // delete a user
         app.delete('/delete-user/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: ObjectId(email) };
-            const deletedUser = await productsCollection.deleteOne(query);
+            const deletedUser = await usersCollection.deleteOne(query);
 
             res.send(deletedUser);
         });
