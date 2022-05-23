@@ -22,6 +22,7 @@ async function run() {
 
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
+        const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
 
         // all reviews
         app.get('/reviews', async (req, res) => {
@@ -89,6 +90,23 @@ async function run() {
 
             const updatedProduct = await productsCollection.updateOne(filter, updateStock, options)
             res.send(updatedProduct);
+        });
+
+        // display my orders
+        app.get('/my-orders', async (req, res) => {
+            const query = { email: email };
+            const cursor = myOrdersCollection.find(query);
+            const myOrders = await cursor.toArray();
+
+            res.send(myOrders);
+        });
+
+        // add to my orders
+        app.post('/add-my-orders', async (req, res) => {
+            const newlyOrderedProduct = req.body;
+            const newOrder = await myItemsCollection.insertOne(newlyOrderedProduct);
+
+            res.send(newOrder);
         });
     }
     finally {
