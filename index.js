@@ -34,13 +34,22 @@ async function run() {
             res.send(users);
         });
 
-        // single review
-        app.get('/reviews/:email', async (req, res) => {
+        // single user
+        app.get('/users/:email', async (req, res) => {
             const email = req?.params?.email;
-            const query = { _id: ObjectId(email) };
+            const query = { email: ObjectId(email) };
             const user = await usersCollection.findOne(query);
 
             res.send(user);
+        });
+
+        // delete a user
+        app.delete('/delete-user/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: ObjectId(email) };
+            const deletedUser = await productsCollection.deleteOne(query);
+
+            res.send(deletedUser);
         });
 
         // all reviews
