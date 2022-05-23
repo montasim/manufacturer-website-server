@@ -294,6 +294,10 @@ async function run() {
 
             res.send(deletedBlog);
         });
+
+        app.get('*', (req, res) => {
+            res.send(`Probably your server path is not valid!`);
+        });
     }
     finally {
 
@@ -303,10 +307,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send(`
-        ${serverName} server is running on port ${port}
-        
-    `);
+    res.send(`${serverName} server is running on port ${port}`);
 });
 
 app.listen(port, () => {
