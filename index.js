@@ -25,6 +25,15 @@ async function run() {
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
 
+        // provide access token when user logins
+        app.post('/login', async (req, res) => {
+            const user = req.body;
+            const accessToken = jsonwebtoken.sign(user, process.env.JWT_ACCESS_TOKEN, {
+                expiresIn: '1d'
+            });
+            res.send(accessToken);
+        })
+
         // all users
         app.get('/users', async (req, res) => {
             const query = {};
@@ -161,9 +170,12 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('Running POSDash Server');
+    res.send(`
+        ${serverName} server is running on port ${port}
+        
+    `);
 });
 
 app.listen(port, () => {
-    console.log('Listening to port', port);
+    console.log(`${serverName} server is running on port ${port}`);
 });
