@@ -5,18 +5,28 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 5000;
-const serverName = process.env.DB_SERVER_NAME;
+const serverName = 'Tools Manufacturer';
 
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.fkzlo.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.qhytd.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-const run = _ => {
-    try {
+const run = async () => {
+    await client.connect();
 
+    const productsCollection = client.db("toolsManufacturerDB").collection("products");
+
+    try {
+        app.get('/products', async (req, res) => {
+            const query = {};
+            const cursor = productsCollection.find(query);
+            const products = await cursor.toArray();
+
+            res.send(products);
+        });
     }
     finally {
 
@@ -25,18 +35,6 @@ const run = _ => {
 
 app.get('/', (req, res) => {
     res.send(`Welcome to ${serverName} server`);
-});
-
-app.get('/index', (req, res) => {
-    res.send(`Welcome to ${serverName} server`);
-});
-
-app.get('/home', (req, res) => {
-    res.send(`Welcome to ${serverName} server`);
-});
-
-app.get('*', (req, res) => {
-    res.send(`Try with a valid server URL`);
 });
 
 app.listen(port, () => {
