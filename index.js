@@ -23,6 +23,7 @@ async function run() {
         const usersCollection = client.db('toolsManufacturerDB').collection('users');
         const adminsCollection = client.db('toolsManufacturerDB').collection('admins');
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
+        const categoriesCollection = client.db('toolsManufacturerDB').collection('categories');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
         const myCartCollection = client.db('toolsManufacturerDB').collection('cart');
@@ -122,6 +123,40 @@ async function run() {
             const review = await reviewsCollection.findOne(query);
 
             res.send(review);
+        });
+
+        // all categories
+        app.get('/categories', async (req, res) => {
+            const query = {};
+            const cursor = categoriesCollection.find(query);
+            const categories = await cursor.toArray();
+
+            res.send(categories);
+        });
+
+        // single category
+        app.get('/categories/:id', async (req, res) => {
+            const id = req?.params?.id;
+            const query = { _id: ObjectId(id) };
+            const category = await categoriesCollection.findOne(query);
+
+            res.send(category);
+        });
+
+        // add new category
+        app.post('/add-category', async (req, res) => {
+            const newCategoryData = req.body;
+            const newCategory = await categoriesCollection.insertOne(newCategoryData);
+            res.send(newCategory);
+        });
+
+        // delete a category
+        app.delete('/delete-category/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deletedCategory = await categoriesCollection.deleteOne(query);
+
+            res.send(deletedCategory);
         });
 
         // all products
