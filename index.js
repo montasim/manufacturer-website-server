@@ -21,8 +21,9 @@ async function run() {
         await client.connect();
 
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
+        const productsCollection = client.db('toolsManufacturerDB').collection('products');
 
-        // testimonials
+        // all reviews
         app.get('/reviews', async (req, res) => {
             const query = {};
             const cursor = reviewsCollection.find(query);
@@ -35,9 +36,18 @@ async function run() {
         app.get('/reviews/:id', async (req, res) => {
             const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
-            const testimonial = await reviewsCollection.findOne(query);
+            const review = await reviewsCollection.findOne(query);
 
-            res.send(testimonial);
+            res.send(review);
+        });
+
+        // all products
+        app.get('/products', async (req, res) => {
+            const query = {};
+            const cursor = productsCollection.find(query);
+            const products = await cursor.toArray();
+
+            res.send(products);
         });
     }
     finally {
