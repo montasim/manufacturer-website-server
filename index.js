@@ -74,6 +74,22 @@ async function run() {
 
             res.send(deletedProduct);
         });
+
+        // update a product data
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateProduct = req?.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateStock = {
+                $set: {
+                    stock: updateProduct.stock
+                }
+            };
+
+            const updatedProduct = await productsCollection.updateOne(filter, updateStock, options)
+            res.send(updatedProduct);
+        });
     }
     finally {
 
