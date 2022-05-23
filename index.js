@@ -25,6 +25,7 @@ async function run() {
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
+        const myCartCollection = client.db('toolsManufacturerDB').collection('cart');
         const blogsCollection = client.db('toolsManufacturerDB').collection('blogs');
 
         // provide access token when user logins
@@ -197,6 +198,32 @@ async function run() {
             const deletedOrder = await myOrdersCollection.deleteOne(query);
 
             res.send(deletedOrder);
+        });
+
+        // display my cart
+        app.get('/my-cart', async (req, res) => {
+            const query = { email: email };
+            const cursor = myCartCollection.find(query);
+            const myCart = await cursor.toArray();
+
+            res.send(myCart);
+        });
+
+        // add to my cart
+        app.post('/add-my-cart', async (req, res) => {
+            const newCartProduct = req.body;
+            const newCart = await myCartCollection.insertOne(newCartProduct);
+
+            res.send(newCart);
+        });
+
+        // delete from my cart
+        app.delete('/my-cart/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deletedCart = await myCartCollection.deleteOne(query);
+
+            res.send(deletedCart);
         });
 
         // all blogs data
