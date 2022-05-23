@@ -175,8 +175,8 @@ async function run() {
         });
 
         // display my orders
-        app.get('/my-orders', async (req, res) => {
-            const query = { email: email };
+        app.get('/my-orders/:email', async (req, res) => {
+            const email = { email: email };
             const cursor = myOrdersCollection.find(query);
             const myOrders = await cursor.toArray();
 
@@ -201,12 +201,12 @@ async function run() {
         });
 
         // display my cart
-        app.get('/my-cart', async (req, res) => {
+        app.get('/cart/:email', async (req, res) => {
             const query = { email: email };
             const cursor = myCartCollection.find(query);
-            const myCart = await cursor.toArray();
+            const cart = await cursor.toArray();
 
-            res.send(myCart);
+            res.send(cart);
         });
 
         // add to my cart
