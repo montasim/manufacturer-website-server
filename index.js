@@ -20,9 +20,19 @@ async function run() {
     try {
         await client.connect();
 
+        const usersCollection = client.db('toolsManufacturerDB').collection('users');
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
+
+        // all users
+        app.get('/users', async (req, res) => {
+            const query = {};
+            const cursor = usersCollection.find(query);
+            const users = await cursor.toArray();
+
+            res.send(users);
+        });
 
         // all reviews
         app.get('/reviews', async (req, res) => {
