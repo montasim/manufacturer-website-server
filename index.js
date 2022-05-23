@@ -25,6 +25,7 @@ async function run() {
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
+        const blogsCollection = client.db('toolsManufacturerDB').collection('blogs');
 
         // provide access token when user logins
         app.post('/login', async (req, res) => {
@@ -196,6 +197,40 @@ async function run() {
             const deletedOrder = await myOrdersCollection.deleteOne(query);
 
             res.send(deletedOrder);
+        });
+
+        // all blogs data
+        app.get('/blogs', async (req, res) => {
+            const query = {};
+            const cursor = blogsCollection.find(query);
+            const blogs = await cursor.toArray();
+
+            res.send(blogs);
+        });
+
+        // single blog data
+        app.get('/blogs/:id', async (req, res) => {
+            const id = req?.params?.id;
+            const query = { _id: ObjectId(id) };
+            const blog = await blogsCollection.findOne(query);
+
+            res.send(blog);
+        });
+
+        // add new blog
+        app.post('/add-blog', async (req, res) => {
+            const newBlogData = req.body;
+            const newBlog = await blogsCollection.insertOne(newBlogData);
+            res.send(newBlog);
+        });
+
+        // delete a blog
+        app.delete('/blogs/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deletedBlog = await blogsCollection.deleteOne(query);
+
+            res.send(deletedBlog);
         });
     }
     finally {
