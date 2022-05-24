@@ -25,7 +25,7 @@ async function run() {
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const categoriesCollection = client.db('toolsManufacturerDB').collection('categories');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
-        const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
+        const ordersCollection = client.db('toolsManufacturerDB').collection('orders');
         const cartCollection = client.db('toolsManufacturerDB').collection('cart');
         const blogsCollection = client.db('toolsManufacturerDB').collection('blogs');
 
@@ -227,28 +227,28 @@ async function run() {
             res.send(updatedProduct);
         });
 
-        // display my orders
-        app.get('/my-orders/:email', async (req, res) => {
+        // display all orders
+        app.get('/orders', async (req, res) => {
             const email = { email: email };
-            const cursor = myOrdersCollection.find(query);
+            const cursor = ordersCollection.find(query);
             const myOrders = await cursor.toArray();
 
-            res.send(myOrders);
+            res.send(orders);
         });
 
-        // add to my orders
-        app.post('/add-my-orders', async (req, res) => {
+        // add to orders
+        app.post('/add-orders', async (req, res) => {
             const newlyOrderedProduct = req.body;
-            const newOrder = await myOrdersCollection.insertOne(newlyOrderedProduct);
+            const newOrder = await ordersCollection.insertOne(newlyOrderedProduct);
 
             res.send(newOrder);
         });
 
         // delete from my orders
-        app.delete('/my-orders/:id', async (req, res) => {
+        app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const deletedOrder = await myOrdersCollection.deleteOne(query);
+            const deletedOrder = await ordersCollection.deleteOne(query);
 
             res.send(deletedOrder);
         });
