@@ -126,6 +126,23 @@ async function run() {
             res.send(review);
         });
 
+        // add new review
+        app.post('/add-review', async (req, res) => {
+            const newReviewData = req.body;
+            const newReview = await reviewsCollection.insertOne(newReviewData);
+
+            res.send(newReview);
+        });
+
+        // delete a review
+        app.delete('/delete-review/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deletedReview = await reviewsCollection.deleteOne(query);
+
+            res.send(deletedReview);
+        });
+
         // all categories
         app.get('/categories', async (req, res) => {
             const query = {};
