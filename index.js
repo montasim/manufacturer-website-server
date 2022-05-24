@@ -26,7 +26,7 @@ async function run() {
         const categoriesCollection = client.db('toolsManufacturerDB').collection('categories');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
         const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
-        const myCartCollection = client.db('toolsManufacturerDB').collection('cart');
+        const cartCollection = client.db('toolsManufacturerDB').collection('cart');
         const blogsCollection = client.db('toolsManufacturerDB').collection('blogs');
 
         // provide access token when user logins
@@ -254,27 +254,27 @@ async function run() {
         });
 
         // display my cart
-        app.get('/cart/:email', async (req, res) => {
-            const query = { email: email };
-            const cursor = myCartCollection.find(query);
+        app.get('/cart', async (req, res) => {
+            const query = {};
+            const cursor = cartCollection.find(query);
             const cart = await cursor.toArray();
 
             res.send(cart);
         });
 
         // add to my cart
-        app.post('/add-my-cart', async (req, res) => {
+        app.post('/add-cart', async (req, res) => {
             const newCartProduct = req.body;
-            const newCart = await myCartCollection.insertOne(newCartProduct);
+            const newCart = await cartCollection.insertOne(newCartProduct);
 
             res.send(newCart);
         });
 
         // delete from my cart
-        app.delete('/my-cart/:id', async (req, res) => {
+        app.delete('/delete-cart/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const deletedCart = await myCartCollection.deleteOne(query);
+            const deletedCart = await cartCollection.deleteOne(query);
 
             res.send(deletedCart);
         });
