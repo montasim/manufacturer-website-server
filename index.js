@@ -236,8 +236,8 @@ async function run() {
             res.send(orders);
         });
 
-        // add to orders
-        app.post('/add-orders', async (req, res) => {
+        // add a order
+        app.post('/add-order', async (req, res) => {
             const newlyOrderedProduct = req.body;
             const newOrder = await ordersCollection.insertOne(newlyOrderedProduct);
 
