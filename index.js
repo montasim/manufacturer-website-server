@@ -227,11 +227,11 @@ async function run() {
             res.send(updatedProduct);
         });
 
-        // display all orders
+        // all orders
         app.get('/orders', async (req, res) => {
-            const email = { email: email };
+            const query = {};
             const cursor = ordersCollection.find(query);
-            const myOrders = await cursor.toArray();
+            const orders = await cursor.toArray();
 
             res.send(orders);
         });
