@@ -60,13 +60,14 @@ async function run() {
         app.post('/add-user', async (req, res) => {
             const newUserData = req.body;
             const newUser = await usersCollection.insertOne(newUserData);
+
             res.send(newUser);
         });
 
         // delete a user
-        app.delete('/delete-user/:email', async (req, res) => {
-            const email = req.params.email;
-            const query = { email: ObjectId(email) };
+        app.delete('/delete-user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
             const deletedUser = await usersCollection.deleteOne(query);
 
             res.send(deletedUser);
@@ -90,7 +91,7 @@ async function run() {
             res.send(admin);
         });
 
-        // add new user
+        // add new admin
         app.post('/add-admin', async (req, res) => {
             const newAdminData = req.body;
             const newAdmin = await adminsCollection.insertOne(newAdminData);
@@ -99,9 +100,9 @@ async function run() {
         });
 
         // delete a admin
-        app.delete('/delete-admin/:email', async (req, res) => {
-            const email = req.params.email;
-            const query = { email: ObjectId(email) };
+        app.delete('/delete-admin/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
             const deletedAdmin = await adminsCollection.deleteOne(query);
 
             res.send(deletedAdmin);
