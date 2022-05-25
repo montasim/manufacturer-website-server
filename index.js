@@ -291,7 +291,7 @@ async function run() {
 
         app.get('/orders', verifyJWT, async (req, res) => {
             const user = req?.query?.user;
-            const decodedEmail = req.decoded.email;
+            const decodedEmail = req?.decoded?.email;
 
             if (user === decodedEmail) {
                 const query = { orderedUserEmail: user };
@@ -321,13 +321,19 @@ async function run() {
         });
 
         // display my cart
-        app.get('/cart', async (req, res) => {
-            const query = {};
-            const cursor = cartCollection.find(query);
-            const cart = await cursor.toArray();
+        app.get('/cart', verifyJWT, async (req, res) => {
+            const user = req?.query?.user;
+            const decodedEmail = req?.decoded?.email;
 
-            res.send(cart);
-        });
+            if (user === decodedEmail) {
+                const query = { email: user };
+                const cart = await cartCollection.find(query).toArray();
+                return res.send(cart);
+            }
+            else {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+        })
 
         // add to my cart
         app.post('/add-cart', async (req, res) => {
