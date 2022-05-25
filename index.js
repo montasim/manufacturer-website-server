@@ -295,7 +295,7 @@ async function run() {
             const decodedEmail = req?.decoded?.email;
 
             if (user === decodedEmail) {
-                const query = { orderedEmail: user };
+                const query = { email: user };
                 const myOrders = await ordersCollection.find(query).toArray();
                 return res.send(myOrders);
             }
