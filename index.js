@@ -25,8 +25,8 @@ async function run() {
         const reviewsCollection = client.db('toolsManufacturerDB').collection('reviews');
         const categoriesCollection = client.db('toolsManufacturerDB').collection('categories');
         const productsCollection = client.db('toolsManufacturerDB').collection('products');
-        const myOrdersCollection = client.db('toolsManufacturerDB').collection('myOrders');
-        const myCartCollection = client.db('toolsManufacturerDB').collection('cart');
+        const ordersCollection = client.db('toolsManufacturerDB').collection('orders');
+        const cartCollection = client.db('toolsManufacturerDB').collection('cart');
         const blogsCollection = client.db('toolsManufacturerDB').collection('blogs');
 
         // provide access token when user logins
@@ -139,6 +139,23 @@ async function run() {
             res.send(review);
         });
 
+        // add new review
+        app.post('/add-review', async (req, res) => {
+            const newReviewData = req.body;
+            const newReview = await reviewsCollection.insertOne(newReviewData);
+
+            res.send(newReview);
+        });
+
+        // delete a review
+        app.delete('/delete-review/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deletedReview = await reviewsCollection.deleteOne(query);
+
+            res.send(deletedReview);
+        });
+
         // all categories
         app.get('/categories', async (req, res) => {
             const query = {};
@@ -223,54 +240,64 @@ async function run() {
             res.send(updatedProduct);
         });
 
-        // display my orders
-        app.get('/my-orders/:email', async (req, res) => {
-            const email = { email: email };
-            const cursor = myOrdersCollection.find(query);
-            const myOrders = await cursor.toArray();
+        // all orders
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const cursor = ordersCollection.find(query);
+            const orders = await cursor.toArray();
 
-            res.send(myOrders);
+            res.send(orders);
         });
 
-        // add to my orders
-        app.post('/add-my-orders', async (req, res) => {
+        // find specific user orders
+        app.get('/orders', async (req, res) => {
+            const email = req?.query?.email;
+            const query = { email: email };
+            const cursor = ordersCollection.find(query);
+            const orders = await cursor.toArray();
+
+            res.send(orders);
+        });
+
+        // add a order
+        app.post('/add-order', async (req, res) => {
             const newlyOrderedProduct = req.body;
-            const newOrder = await myOrdersCollection.insertOne(newlyOrderedProduct);
+            const newOrder = await ordersCollection.insertOne(newlyOrderedProduct);
 
             res.send(newOrder);
         });
 
         // delete from my orders
-        app.delete('/my-orders/:id', async (req, res) => {
+        app.delete('/delete-order/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const deletedOrder = await myOrdersCollection.deleteOne(query);
+            const deletedOrder = await ordersCollection.deleteOne(query);
 
             res.send(deletedOrder);
         });
 
         // display my cart
-        app.get('/cart/:email', async (req, res) => {
-            const query = { email: email };
-            const cursor = myCartCollection.find(query);
+        app.get('/cart', async (req, res) => {
+            const query = {};
+            const cursor = cartCollection.find(query);
             const cart = await cursor.toArray();
 
             res.send(cart);
         });
 
         // add to my cart
-        app.post('/add-my-cart', async (req, res) => {
+        app.post('/add-cart', async (req, res) => {
             const newCartProduct = req.body;
-            const newCart = await myCartCollection.insertOne(newCartProduct);
+            const newCart = await cartCollection.insertOne(newCartProduct);
 
             res.send(newCart);
         });
 
         // delete from my cart
-        app.delete('/my-cart/:id', async (req, res) => {
+        app.delete('/delete-cart/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const deletedCart = await myCartCollection.deleteOne(query);
+            const deletedCart = await cartCollection.deleteOne(query);
 
             res.send(deletedCart);
         });
