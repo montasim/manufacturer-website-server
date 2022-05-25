@@ -236,6 +236,16 @@ async function run() {
             res.send(orders);
         });
 
+        // find specific user orders
+        app.get('/orders', async (req, res) => {
+            const email = req?.query?.email;
+            const query = { orderedUserEmail: email };
+            const cursor = ordersCollection.find(query);
+            const orders = await cursor.toArray();
+
+            res.send(orders);
+        });
+
         // add a order
         app.post('/add-order', async (req, res) => {
             const newlyOrderedProduct = req.body;
