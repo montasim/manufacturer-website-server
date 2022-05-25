@@ -289,15 +289,19 @@ async function run() {
             res.send(orders);
         });
 
-        // find specific user orders
-        app.get('/orders', async (req, res) => {
-            const email = req?.query?.email;
-            const query = { email: email };
-            const cursor = ordersCollection.find(query);
-            const orders = await cursor.toArray();
+        app.get('/orders', verifyJWT, async (req, res) => {
+            const user = req?.query?.user;
+            const decodedEmail = req.decoded.email;
 
-            res.send(orders);
-        });
+            if (user === decodedEmail) {
+                const query = { orderedUserEmail: user };
+                const orders = await ordersCollection.find(query).toArray();
+                return res.send(orders);
+            }
+            else {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+        })
 
         // add a order
         app.post('/add-order', async (req, res) => {
