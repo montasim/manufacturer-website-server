@@ -290,7 +290,7 @@ async function run() {
         });
 
         // my orders
-        app.get('/orders', verifyJWT, async (req, res) => {
+        app.get('/my-orders', verifyJWT, async (req, res) => {
             const user = req?.query?.user;
             const decodedEmail = req?.decoded?.email;
 
