@@ -56,6 +56,19 @@ async function run() {
             res.send(user);
         });
 
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+
+            res.send(result);
+        });
+
         // add new user
         app.post('/add-user', async (req, res) => {
             const newUserData = req.body;
