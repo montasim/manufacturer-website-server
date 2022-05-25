@@ -46,7 +46,7 @@ async function run() {
 
         // provide access token when user logins
         app.post('/login', async (req, res) => {
-            const user = req.body;
+            const user = req?.body;
             const accessToken = jsonwebtoken.sign(user, process.env.JWT_ACCESS_TOKEN, {
                 expiresIn: '1d'
             });
@@ -72,8 +72,8 @@ async function run() {
         });
 
         app.put('/user/:email', async (req, res) => {
-            const email = req.params.email;
-            const user = req.body;
+            const email = req?.params?.email;
+            const user = req?.body;
             const filter = { email: email };
             const options = { upsert: true };
             const updateDoc = {
@@ -86,17 +86,17 @@ async function run() {
         });
 
         app.get('/admin/:email', async (req, res) => {
-            const email = req.params.email;
+            const email = req?.params?.email;
             const user = await usersCollection.findOne({ email: email });
-            const isAdmin = user.role === 'admin';
+            const isAdmin = user?.role === 'admin';
             res.send({ admin: isAdmin })
         });
 
         app.put('/user/admin/:email', verifyJWT, async (req, res) => {
-            const email = req.params.email;
-            const requester = req.decoded.email;
+            const email = req?.params?.email;
+            const requester = req?.decoded?.email;
             const requesterAccount = await usersCollection.findOne({ email: requester });
-            if (requesterAccount.role === 'admin') {
+            if (requesterAccount?.role === 'admin') {
                 const filter = { email: email };
                 const updateDoc = {
                     $set: { role: 'admin' },
@@ -111,7 +111,7 @@ async function run() {
 
         // add new user
         app.post('/add-user', async (req, res) => {
-            const newUserData = req.body;
+            const newUserData = req?.body;
             const newUser = await usersCollection.insertOne(newUserData);
 
             res.send(newUser);
@@ -119,7 +119,7 @@ async function run() {
 
         // delete a user
         app.delete('/delete-user/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedUser = await usersCollection.deleteOne(query);
 
@@ -146,7 +146,7 @@ async function run() {
 
         // add new admin
         app.post('/add-admin', async (req, res) => {
-            const newAdminData = req.body;
+            const newAdminData = req?.body;
             const newAdmin = await adminsCollection.insertOne(newAdminData);
 
             res.send(newAdmin);
@@ -154,7 +154,7 @@ async function run() {
 
         // delete a admin
         app.delete('/delete-admin/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedAdmin = await adminsCollection.deleteOne(query);
 
@@ -181,7 +181,7 @@ async function run() {
 
         // add new review
         app.post('/add-review', async (req, res) => {
-            const newReviewData = req.body;
+            const newReviewData = req?.body;
             const newReview = await reviewsCollection.insertOne(newReviewData);
 
             res.send(newReview);
@@ -189,7 +189,7 @@ async function run() {
 
         // delete a review
         app.delete('/delete-review/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedReview = await reviewsCollection.deleteOne(query);
 
@@ -216,14 +216,14 @@ async function run() {
 
         // add new category
         app.post('/add-category', async (req, res) => {
-            const newCategoryData = req.body;
+            const newCategoryData = req?.body;
             const newCategory = await categoriesCollection.insertOne(newCategoryData);
             res.send(newCategory);
         });
 
         // delete a category
         app.delete('/delete-category/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedCategory = await categoriesCollection.deleteOne(query);
 
@@ -250,14 +250,14 @@ async function run() {
 
         // add new product
         app.post('/add-product', async (req, res) => {
-            const newProductData = req.body;
+            const newProductData = req?.body;
             const newProduct = await productsCollection.insertOne(newProductData);
             res.send(newProduct);
         });
 
         // delete a product
         app.delete('/delete-product/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedProduct = await productsCollection.deleteOne(query);
 
@@ -266,7 +266,7 @@ async function run() {
 
         // update a product data
         app.put('/products/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const updateProduct = req?.body;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
@@ -301,7 +301,7 @@ async function run() {
 
         // add a order
         app.post('/add-order', async (req, res) => {
-            const newlyOrderedProduct = req.body;
+            const newlyOrderedProduct = req?.body;
             const newOrder = await ordersCollection.insertOne(newlyOrderedProduct);
 
             res.send(newOrder);
@@ -309,7 +309,7 @@ async function run() {
 
         // delete from my orders
         app.delete('/delete-order/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedOrder = await ordersCollection.deleteOne(query);
 
@@ -327,7 +327,7 @@ async function run() {
 
         // add to my cart
         app.post('/add-cart', async (req, res) => {
-            const newCartProduct = req.body;
+            const newCartProduct = req?.body;
             const newCart = await cartCollection.insertOne(newCartProduct);
 
             res.send(newCart);
@@ -335,7 +335,7 @@ async function run() {
 
         // delete from my cart
         app.delete('/delete-cart/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedCart = await cartCollection.deleteOne(query);
 
@@ -362,14 +362,14 @@ async function run() {
 
         // add new blog
         app.post('/add-blog', async (req, res) => {
-            const newBlogData = req.body;
+            const newBlogData = req?.body;
             const newBlog = await blogsCollection.insertOne(newBlogData);
             res.send(newBlog);
         });
 
         // delete a blog
         app.delete('/blogs/:id', async (req, res) => {
-            const id = req.params.id;
+            const id = req?.params?.id;
             const query = { _id: ObjectId(id) };
             const deletedBlog = await blogsCollection.deleteOne(query);
 
