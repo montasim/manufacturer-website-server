@@ -292,12 +292,12 @@ async function run() {
         });
 
         // my orders
-        app.get('/my-orders', verifyJWT, async (req, res) => {
-            const user = req?.query?.user;
+        app.get('/my-orders/:email', verifyJWT, async (req, res) => {
+            const email = req?.query?.email;
             const decodedEmail = req?.decoded?.email;
 
             if (user === decodedEmail) {
-                const query = { email: user };
+                const query = { email: email };
                 const myOrders = await ordersCollection.find(query).toArray();
                 return res.send(myOrders);
             }
