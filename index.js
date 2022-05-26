@@ -292,19 +292,19 @@ async function run() {
         });
 
         // my orders
-        app.get('/my-orders/:email', verifyJWT, async (req, res) => {
-            const user = req?.query?.email;
-            const decodedEmail = req?.decoded?.email;
-
-            if (user === decodedEmail) {
-                const query = { email: user };
-                const myOrders = await ordersCollection.find(query).toArray();
-                return res.send(myOrders);
+        app.get('/my-cart', verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            const decodedEmail = req.decoded.email;
+            if (email === decodedEmail) {
+                const query = { email: email };
+                const myCart = await cartCollection.find(query).toArray();
+                return res.send(myCart);
             }
             else {
                 return res.status(403).send({ message: 'forbidden access' });
             }
-        })
+        });
+
 
         // add a order
         app.post('/add-order', async (req, res) => {
