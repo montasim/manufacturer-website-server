@@ -291,21 +291,6 @@ async function run() {
             res.send(orders);
         });
 
-        // my orders
-        app.get('/my-cart', verifyJWT, async (req, res) => {
-            const email = req.query.email;
-            const decodedEmail = req.decoded.email;
-            if (email === decodedEmail) {
-                const query = { email: email };
-                const myCart = await cartCollection.find(query).toArray();
-                return res.send(myCart);
-            }
-            else {
-                return res.status(403).send({ message: 'forbidden access' });
-            }
-        });
-
-
         // add a order
         app.post('/add-order', async (req, res) => {
             const newlyOrderedProduct = req?.body;
