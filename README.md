@@ -8,7 +8,7 @@
 
 ## Description
 
-Jantril is a tools manufacturer website. Here user can create an account with email and password. User can also use social media like Google to login. After creating the account user is redirected to the page from where he was taken to login page. User can place order, they can add blogs and reviews. User can delete product from cart. User can update their profile.
+Jantrik is a tools manufacturer website. Here user can create an account with email and password. User can also use social media like Google to login. After creating the account user is redirected to the page from where he was taken to login page. User can place order, they can add blogs and reviews. User can delete product from cart. User can update their profile.
 
 ## Features and Functionality
 
